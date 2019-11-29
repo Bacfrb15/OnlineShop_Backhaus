@@ -11,11 +11,15 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -68,8 +72,18 @@ public class UpdateAmountServlet extends HttpServlet {
         Gson gson = new Gson();
         Cart c = gson.fromJson(new InputStreamReader(request.getInputStream()), Cart.class);
         
-        int customerid = Integer.parseInt(request.getSession().getAttribute("customerid")+"");
+       // int customerid = Integer.parseInt(request.getSession().getAttribute("customerid")+"");
        // Database.getInstance().
+       
+       int customerid = (int) request.getSession().getAttribute("customerid");
+        try {
+            Database.getInstance().updateAmount(customerid, c.getAmount(), c.getArticleid());
+            Cart cart = null;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateAmountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     /**
