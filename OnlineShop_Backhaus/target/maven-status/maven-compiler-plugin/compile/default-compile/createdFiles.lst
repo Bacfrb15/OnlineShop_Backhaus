@@ -6,7 +6,7 @@ DB\Database.class
 BL\Customer.class
 Servlets\OnStartServlet.class
 BL\Order.class
-Servlets\OnShowArticles$ArticleAmount.class
 Servlets\OnShowArticles.class
 BL\Article.class
+Servlets\UpdateAmountServlet$AmountUpdate.class
 BL\Position.class

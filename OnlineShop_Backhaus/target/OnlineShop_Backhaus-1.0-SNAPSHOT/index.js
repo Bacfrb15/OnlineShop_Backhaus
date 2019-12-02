@@ -20,7 +20,7 @@ function showArticles() {
                         table += "<tr>";
                         table += "<td>" + data[i]['artname'] + "</td>";
                         table += "<td>" + data[i]['price'] + "</td>";
-                        table += "<td>" + data[i]['amount'] + "</td>";
+                        table += "<td id='"+"amount"+data[i]['articleid']+"'>" + data[i]['amount'] + "</td>";
                         table += "<td><input type='button' name='add' value='+' onClick='updateAmount("+ data[i]['articleid'] +",1)'/></td>";
                         table += "<td><input type='button' name='add' value='-' onClick='updateAmount("+ data[i]['articleid'] +",-1)'/></td>";
                         table += "</tr>";
@@ -44,15 +44,16 @@ function updateAmount(articleid, amount) {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: {
+                body: JSON.stringify({
                     articleid: articleid,
                     amount: amount
-                }
+                })
             })
             .then(function (response) {
                 response.json().then(function (data)
                 {
                    console.log(data); 
+                   document.getElementById("amount"+articleid).innerHTML=data["amount"];
                 });
             });
 }

@@ -101,29 +101,4 @@ public class OnShowArticles extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private class ArticleAmount
-    {
-        private int articleid;
-        private double price;
-        private int amount;
-
-        public ArticleAmount(int articleid, double price, int amount) {
-            this.articleid = articleid;
-            this.price = price;
-            this.amount = amount;
-        }
-
-        public int getArticleid() {
-            return articleid;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-    }
 }

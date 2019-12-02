@@ -76,7 +76,7 @@ public class Database {
             ps = conn.prepareStatement("SELECT cartid "
                                      + "FROM cart "
                                      + "WHERE customerid = ? ");
-            ps.setInt(1, cartid);
+            ps.setInt(1, customerid);
             rs = ps.executeQuery();
             while (rs.next()) {
                 cartid = rs.getInt("cartid");
@@ -99,9 +99,9 @@ public class Database {
     }
     
     public int updateAmount(int cartid, int amount, int articleid) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*)"
-                                                    + "FROM cartposition"
-                                                    + "WHERE cartid = ? AND articleid = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) "
+                                                    + "FROM cartposition "
+                                                    + "WHERE cartid = ? AND articleid = ? ");
         ps.setInt(1, cartid);
         ps.setInt(2, articleid);
         
@@ -110,9 +110,9 @@ public class Database {
         
         if(rs.getInt("count")== 1 )
         {
-            ps = conn.prepareStatement("SELECT amount"
-                                     + "FROM cartposition"
-                                     + "WHERE cartid = ? AND articleid = ?");
+            ps = conn.prepareStatement("SELECT amount "
+                                     + "FROM cartposition "
+                                     + "WHERE cartid = ? AND articleid = ? ");
             ps.setInt(1, cartid);
             ps.setInt(2, articleid);
             rs = ps.executeQuery();
@@ -121,7 +121,7 @@ public class Database {
             int newamount = rs.getInt("amount");
             
             newamount += amount;
-            ps = conn.prepareStatement("UPDATE cartposition SET amount=? WHERE cartid=? AND articleid=?");
+            ps = conn.prepareStatement("UPDATE cartposition SET amount=? WHERE cartid=? AND articleid=? ");
             ps.setInt(1, newamount);
             ps.setInt(2, cartid);
             ps.setInt(3, articleid);
@@ -130,7 +130,7 @@ public class Database {
         }
         else
         {
-            ps = conn.prepareStatement("INSERT INTO cartposition(cartid,articleid,amount) values(?,?,?)");
+            ps = conn.prepareStatement("INSERT INTO cartposition(cartid,articleid,amount) values(?,?,?) ");
             ps.setInt(1, cartid);
             ps.setInt(2, articleid);
             ps.setInt(3, amount);

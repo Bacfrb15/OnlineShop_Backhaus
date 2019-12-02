@@ -8,6 +8,7 @@ package Servlets;
 import BL.Cart;
 import DB.Database;
 import com.google.gson.Gson;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -28,36 +29,6 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "UpdateAmountServlet", urlPatterns = {"/UpdateAmountServlet"})
 public class UpdateAmountServlet extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-    }
-
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -69,23 +40,20 @@ public class UpdateAmountServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        Gson gson = new Gson();
-        Cart c = gson.fromJson(new InputStreamReader(request.getInputStream()), Cart.class);
-        
-       // int customerid = Integer.parseInt(request.getSession().getAttribute("customerid")+"");
-       // Database.getInstance().
-       
-       int customerid = (int) request.getSession().getAttribute("customerid");
-        try {          
-            Cart cart = new Cart(c.getArticleid(), Database.getInstance().updateAmount(customerid, c.getAmount(), c.getArticleid()));
-            String jsonAnswer = gson.toJson(cart);
+        try {
+            int customerid = (int) request.getSession().getAttribute("customerid");
+            int cartid = Database.getInstance().getCartID(customerid);                
+            Gson gson = new Gson();
+            AmountUpdate updater = gson.fromJson(new InputStreamReader(request.getInputStream()), AmountUpdate.class);
+            updater.setAmount(Database.getInstance().updateAmount(cartid, updater.getAmount(), updater.getArticleid()));
+            String jsonAnswer = gson.toJson(updater);
             OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
             osw.write(jsonAnswer);
             osw.flush();
         } catch (SQLException ex) {
             Logger.getLogger(UpdateAmountServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         
     }
 
@@ -99,4 +67,32 @@ public class UpdateAmountServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private class AmountUpdate
+    {
+        private int articleid;
+        private int amount;
+
+        public AmountUpdate(int articleid, int amount) {
+            this.articleid = articleid;
+            this.amount = amount;
+        }
+
+        public int getArticleid() {
+            return articleid;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+
+        public void setArticleid(int articleid) {
+            this.articleid = articleid;
+        }
+
+        public void setAmount(int amount) {
+            this.amount = amount;
+        }
+        
+        
+    }
 }
