@@ -63,24 +63,24 @@ public class Database {
     
     public int getCartID(int customerid) throws SQLException
     {
-        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(customerid)"
-                                                    + "FROM cart"
-                                                    + "WHERE customerid = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) "
+                                                    +"FROM cart "
+                                                    +"WHERE customerid = ? ");
         ps.setInt(1, customerid);
-        
         ResultSet rs = ps.executeQuery();
         rs.next();
         if(rs.getInt("count")== 1)
         {
             int cartid = -1;
             
-            ps = conn.prepareStatement("SELECT cartid"
-                                     + "FROM cart"
-                                     + "WHERE customerid = ?");
+            ps = conn.prepareStatement("SELECT cartid "
+                                     + "FROM cart "
+                                     + "WHERE customerid = ? ");
             ps.setInt(1, cartid);
-            rs=ps.executeQuery();
-            rs.next();
-            cartid = rs.getInt("cartid");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                cartid = rs.getInt("cartid");
+            }
             return cartid;
         }
         else
@@ -96,14 +96,6 @@ public class Database {
         int articleid = article.getArticleid();
         int amount = article.getAmount();
         updateAmount(customerid, amount, articleid);
-    }
-    
-    public int getCartidFromCustomerid(int id) throws SQLException {
-        PreparedStatement ps = conn.prepareCall("SELECT cartid FROM cart WHERE customerid = ?");
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        return rs.getInt("cartid");
     }
     
     public int updateAmount(int cartid, int amount, int articleid) throws SQLException {
@@ -147,19 +139,24 @@ public class Database {
         }
     }
     
-    public ArrayList<Article> setArticleAmount(int cartid, ArrayList<Article> articles)
+    
+    
+    public ArrayList<Article> setArticleAmount(int cartid, ArrayList<Article> articles) throws SQLException
     {
-        ArrayList<Article> items = new ArrayList<>();
-        PreparedStatement state;
+        PreparedStatement ps;
         ResultSet rs;
         
         for(Article a : articles)
         {
-            
+            ps = conn.prepareStatement("SELECT COALESCE(c.amount,0) amount "
+                                     + "FROM article a LEFT OUTER JOIN cartposition c ON a.articleid = c.articleid "
+                                     + "WHERE a.articleid =  ? ");
+            ps.setInt(1, a.getArticleid());
+            rs = ps.executeQuery();
+            rs.next();
+            a.setAmount(rs.getInt("amount"));
         }
-        
-        
-        return items;
+        return articles;
     }
     
     public ArrayList<Article> getArticles() throws SQLException, ClassNotFoundException
@@ -167,9 +164,9 @@ public class Database {
         String sql = "SELECT *"
                    + "FROM article";
         
-        PreparedStatement state = conn.prepareStatement(sql);
+        PreparedStatement ps = conn.prepareStatement(sql);
         
-        ResultSet rs = state.executeQuery();
+        ResultSet rs = ps.executeQuery();
         
         ArrayList<Article> articles = new ArrayList<>();
         

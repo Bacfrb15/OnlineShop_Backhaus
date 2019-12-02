@@ -54,7 +54,14 @@ public class OnShowArticles extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            ArrayList<Article> articles = Database.getInstance().getArticles();
+            
+            int customerid = (int) request.getSession().getAttribute("customerid");
+            int cartid = Database.getInstance().getCartID(customerid);
+            
+            
+            
+            ArrayList<Article> articles = Database.getInstance().setArticleAmount(cartid, Database.getInstance().getArticles());
+            
             Gson gson = new Gson();
             String jsonEntries = gson.toJson(articles);
             
