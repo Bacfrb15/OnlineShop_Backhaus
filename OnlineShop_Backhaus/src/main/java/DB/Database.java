@@ -98,20 +98,70 @@ public class Database {
         updateAmount(customerid, amount, articleid);
     }
     
-    public void updateAmount(int customerid, int amount, int articlenr) throws SQLException {
-        PreparedStatement ps1 = conn.prepareStatement("SELECT cartid "
-                                                    + "FROM cart INNER JOIN customer ON customerid = ?");
-        ps1.setInt(1,customerid);
-        ResultSet rs1 = ps1.executeQuery();
-        rs1.next();
-        PreparedStatement ps2 = conn.prepareStatement("UPDATE cartposition "
-                                                    + "SET amount = ? "
-                                                    + "WHERE cartid = ? AND articlenr = ?");
-        ps2.setInt(1,amount);
-        ps2.setInt(2,rs1.getInt("cartid"));
-        ps2.setInt(3,articlenr);
-        ps2.execute();
+    public int getCartidFromCustomerid(int id) throws SQLException {
+        PreparedStatement ps = conn.prepareCall("SELECT cartid FROM cart WHERE customerid = ?");
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        return rs.getInt("cartid");
     }
+    
+    public int updateAmount(int cartid, int amount, int articleid) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*)"
+                                                    + "FROM cartposition"
+                                                    + "WHERE cartid = ? AND articleid = ?");
+        ps.setInt(1, cartid);
+        ps.setInt(2, articleid);
+        
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        
+        if(rs.getInt("count")== 1 )
+        {
+            ps = conn.prepareStatement("SELECT amount"
+                                     + "FROM cartposition"
+                                     + "WHERE cartid = ? AND articleid = ?");
+            ps.setInt(1, cartid);
+            ps.setInt(2, articleid);
+            rs = ps.executeQuery();
+            rs.next();
+            
+            int newamount = rs.getInt("amount");
+            
+            newamount += amount;
+            ps = conn.prepareStatement("UPDATE cartposition SET amount=? WHERE cartid=? AND articleid=?");
+            ps.setInt(1, newamount);
+            ps.setInt(2, cartid);
+            ps.setInt(3, articleid);
+            ps.execute();
+            return newamount;
+        }
+        else
+        {
+            ps = conn.prepareStatement("INSERT INTO cartposition(cartid,articleid,amount) values(?,?,?)");
+            ps.setInt(1, cartid);
+            ps.setInt(2, articleid);
+            ps.setInt(3, amount);
+            ps.execute();
+            return amount;
+        }
+    }
+    
+    public ArrayList<Article> setArticleAmount(int cartid, ArrayList<Article> articles)
+    {
+        ArrayList<Article> items = new ArrayList<>();
+        PreparedStatement state;
+        ResultSet rs;
+        
+        for(Article a : articles)
+        {
+            
+        }
+        
+        
+        return items;
+    }
+    
     public ArrayList<Article> getArticles() throws SQLException, ClassNotFoundException
     {
         String sql = "SELECT *"
@@ -125,7 +175,7 @@ public class Database {
         
         while(rs.next())
         {
-            articles.add(new Article(rs.getInt("articleid"), rs.getString("artname"), rs.getDouble("price")));
+            articles.add(new Article(rs.getInt("articleid"), rs.getString("artname"), rs.getDouble("price"), 0));
         }
         
         return articles;

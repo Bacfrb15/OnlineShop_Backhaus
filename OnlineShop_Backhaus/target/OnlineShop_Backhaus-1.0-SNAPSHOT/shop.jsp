@@ -15,7 +15,7 @@
     <body>
         <h1>Shop</h1>
         <div id="article">
-                
+            
         </div>
         <script src="index.js" type="text/javascript"></script>
         <script>showArticles()</script>

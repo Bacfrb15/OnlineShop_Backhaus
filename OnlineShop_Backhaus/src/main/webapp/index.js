@@ -33,6 +33,9 @@ function showArticles() {
 }
 
 function updateAmount(articleid, amount) {
+    console.log(articleid);
+    console.log(amount);
+    
     fetch('./UpdateAmountServlet',
             {
                 method: 'post',

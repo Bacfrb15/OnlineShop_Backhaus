@@ -10,6 +10,7 @@ import DB.Database;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -76,10 +77,12 @@ public class UpdateAmountServlet extends HttpServlet {
        // Database.getInstance().
        
        int customerid = (int) request.getSession().getAttribute("customerid");
-        try {
-            Database.getInstance().updateAmount(customerid, c.getAmount(), c.getArticleid());
-            Cart cart = null;
-            
+        try {          
+            Cart cart = new Cart(c.getArticleid(), Database.getInstance().updateAmount(customerid, c.getAmount(), c.getArticleid()));
+            String jsonAnswer = gson.toJson(cart);
+            OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
+            osw.write(jsonAnswer);
+            osw.flush();
         } catch (SQLException ex) {
             Logger.getLogger(UpdateAmountServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
