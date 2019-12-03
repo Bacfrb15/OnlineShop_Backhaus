@@ -1,6 +1,7 @@
 package BL;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -9,9 +10,9 @@ import java.sql.Date;
 public class Order {
     private int orderid;
     private int customerid;
-    private Date date;
+    private Timestamp date;
 
-    public Order(int orderid, int customerid, Date date) {
+    public Order(int orderid, int customerid, Timestamp date) {
         this.orderid = orderid;
         this.customerid = customerid;
         this.date = date;
@@ -33,11 +34,11 @@ public class Order {
         this.customerid = customerid;
     }
 
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 }

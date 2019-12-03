@@ -2,6 +2,8 @@ package DB;
 
 import BL.Article;
 import BL.Cart;
+import BL.Order;
+import BL.Position;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -91,6 +93,7 @@ public class Database {
             return getCartID(customerid);
         }
     }
+    
     public void updateCart(Cart article, int customerid) throws SQLException
     {
         int articleid = article.getArticleid();
@@ -121,16 +124,20 @@ public class Database {
             int newamount = rs.getInt("amount");
             
             newamount += amount;
-            ps = conn.prepareStatement("UPDATE cartposition SET amount=? WHERE cartid=? AND articleid=? ");
-            ps.setInt(1, newamount);
-            ps.setInt(2, cartid);
-            ps.setInt(3, articleid);
-            ps.execute();
-            return newamount;
+            if(newamount >= 0)
+            {
+                ps = conn.prepareStatement("UPDATE cartposition SET amount=? WHERE cartid=? AND articleid=? ");
+                ps.setInt(1, newamount);
+                ps.setInt(2, cartid);
+                ps.setInt(3, articleid);
+                ps.execute();
+                return newamount;
+            }
+            return 0;
         }
         else
         {
-            ps = conn.prepareStatement("INSERT INTO cartposition(cartid,articleid,amount) values(?,?,?) ");
+            ps = conn.prepareStatement("INSERT INTO cartposition(cartid,articleid,amount) VALUES(?,?,?) ");
             ps.setInt(1, cartid);
             ps.setInt(2, articleid);
             ps.setInt(3, amount);
@@ -138,7 +145,57 @@ public class Database {
             return amount;
         }
     }
+    public ArrayList<Order> showOrders(int customerid) throws SQLException
+    {
+        ArrayList<Order> orders = new ArrayList<>();
+        
+        PreparedStatement ps = conn.prepareStatement("SELECT * "
+                                                   + "FROM public.order "
+                                                   + "WHERE customerid = ? ");
+        ps.setInt(1, customerid);
+        ResultSet rs = ps.executeQuery();
+        
+        while(rs.next())
+        {
+            orders.add(new Order(rs.getInt("orderid"), customerid, rs.getTimestamp("date")));
+        }
+        return orders;
+    }
     
+    public void newOrder(int customerid) throws SQLException
+    {
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO public.order(customerid) VALUES(?) ");
+        ps.setInt(1,customerid);
+        ps.execute();
+        
+        ps = conn.prepareStatement("SELECT MAX(orderid) "
+                                 + "FROM public.order "
+                                 + "WHERE customerid = ? ");
+        ps.setInt(1, customerid);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        
+        int orderid = rs.getInt("max");
+        int cartid = getCartID(customerid);
+        ps = conn.prepareStatement("SELECT articleid, amount "
+                                 + "FROM cartposition "
+                                 + "WHERE cartid = ? ");
+        ps.setInt(1, cartid);
+        rs = ps.executeQuery();
+        
+        while(rs.next())
+        {
+            ps = conn.prepareStatement("INSERT INTO position(articleid, orderid, amount) VALUES(?,?,?) ");
+            ps.setInt(1, rs.getInt("articleid"));
+            ps.setInt(2, orderid);
+            ps.setInt(3, rs.getInt("amount"));
+            ps.execute();
+        }
+        
+        ps = conn.prepareStatement("DELETE FROM cartposition WHERE cartid = ? ");
+        ps.setInt(1, cartid);
+        ps.execute();
+    }
     
     
     public ArrayList<Article> setArticleAmount(int cartid, ArrayList<Article> articles) throws SQLException
@@ -158,6 +215,7 @@ public class Database {
         }
         return articles;
     }
+
     
     public ArrayList<Article> getArticles() throws SQLException, ClassNotFoundException
     {

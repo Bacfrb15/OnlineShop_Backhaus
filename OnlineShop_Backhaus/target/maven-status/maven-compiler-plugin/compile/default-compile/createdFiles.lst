@@ -2,11 +2,13 @@ Servlets\UpdateAmountServlet.class
 PBKDF2\PBKDF2Hasher.class
 Servlets\OnLoginServlet.class
 BL\Cart.class
-DB\Database.class
-BL\Customer.class
 Servlets\OnStartServlet.class
 BL\Order.class
+Servlets\ShowOrderServlet.class
 Servlets\OnShowArticles.class
 BL\Article.class
 Servlets\UpdateAmountServlet$AmountUpdate.class
+DB\Database.class
+BL\Customer.class
+Servlets\OnOrderServlet.class
 BL\Position.class

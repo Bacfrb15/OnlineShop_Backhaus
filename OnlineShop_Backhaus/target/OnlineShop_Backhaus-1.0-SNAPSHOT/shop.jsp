@@ -3,7 +3,6 @@
     Created on : 20.11.2019, 10:59:34
     Author     : franz
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -17,7 +16,13 @@
         <div id="article">
             
         </div>
+        <br>
+        <form>
+            <input type="submit" formmethod="post" formaction="./OnOrderServlet" value="Buy"/>
+            <input type="submit" formmethod="post" formaction="./ShowOrderServlet" value="Show Orders"/>
+        </form>
         <script src="index.js" type="text/javascript"></script>
         <script>showArticles()</script>
+        <script src="shop.js" type="text/javascript"></script>
     </body>
 </html>
