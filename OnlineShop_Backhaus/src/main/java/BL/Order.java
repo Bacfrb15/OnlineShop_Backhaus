@@ -2,6 +2,7 @@ package BL;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -40,5 +41,10 @@ public class Order {
 
     public void setDate(Timestamp date) {
         this.date = date;
+    }
+    
+    public String getDateFormatter()
+    {
+        return new SimpleDateFormat("dd.MMM yyyy HH:mm:ss").format(date);
     }
 }

@@ -22,7 +22,7 @@
                         <c:out value="${o.orderid}"/>
                     </td>
                     <td>
-                        <c:out value="${o.date}"/>
+                        <c:out value="${o.getDateFormatter()}"/>
                     </td>
                     <td>
                         <input type="button" value="..." onclick="showArticles(${o.orderid})"/>
