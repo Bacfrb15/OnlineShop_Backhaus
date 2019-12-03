@@ -36,14 +36,16 @@ public class OnOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int customerid = (int) request.getSession().getAttribute("customerid");
-        
+        String redirect;
         try {
             Database.getInstance().newOrder(customerid);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/shop.jsp");
-            rd.forward(request, response);
+            redirect ="/shop.jsp";
         } catch (SQLException ex) {
+            redirect = "/error.jsp";
             Logger.getLogger(OnOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirect);
+        rd.forward(request, response);
     }
 
     /**

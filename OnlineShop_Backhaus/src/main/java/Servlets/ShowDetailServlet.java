@@ -5,8 +5,15 @@
  */
 package Servlets;
 
+import DB.Database;
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +31,17 @@ public class ShowDetailServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        try {
+            Gson gson = new Gson();
+            int orderid = gson.fromJson(new InputStreamReader(request.getInputStream()), Id.class).getOrderid();
+             
+            String jsonAnswer = gson.toJson(Database.getInstance().showDetails(orderid));
+            OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
+            osw.write(jsonAnswer);
+            osw.flush();     
+        } catch (SQLException ex) {
+            Logger.getLogger(ShowDetailServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -35,5 +53,23 @@ public class ShowDetailServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    private class Id
+    {
+        private int orderid;
 
+        public Id(int orderid) {
+            this.orderid = orderid;
+        }
+
+        public int getOrderid() {
+            return orderid;
+        }
+
+        public void setOrderid(int orderid) {
+            this.orderid = orderid;
+        }
+        
+        
+    }
 }

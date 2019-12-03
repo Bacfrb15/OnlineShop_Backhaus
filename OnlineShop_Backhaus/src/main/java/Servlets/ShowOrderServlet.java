@@ -36,14 +36,16 @@ public class ShowOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int customerid = (int)request.getSession().getAttribute("customerid");
-        
+        String redirect;
         try {
             request.setAttribute("orders", Database.getInstance().showOrders(customerid));
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/order.jsp");
-            rd.forward(request, response);
+            redirect ="/order.jsp";
         } catch (SQLException ex) {
             Logger.getLogger(ShowOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+            redirect ="/error.jsp";
         }
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirect);
+        rd.forward(request, response);
     }
 
     /**

@@ -53,8 +53,6 @@ public class UpdateAmountServlet extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(UpdateAmountServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
     }
 
     /**

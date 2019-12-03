@@ -15,7 +15,7 @@
     <body>
         <h1>Orders</h1>      
         <table>
-            <tr><td>Order ID</td><td>Date</td><td>Details</td></tr>
+            <tr><th>Order ID</th><th>Date</th><th>Details</th></tr>
             <c:forEach items="${orders}" var="o">
                 <tr>
                     <td>
@@ -25,7 +25,7 @@
                         <c:out value="${o.date}"/>
                     </td>
                     <td>
-                        <input type="button" value="..."/>
+                        <input type="button" value="..." onclick="showArticles(${o.orderid})"/>
                     </td>
                 </tr>
             </c:forEach>

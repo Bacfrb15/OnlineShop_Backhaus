@@ -1,3 +1,4 @@
+Servlets\ShowDetailServlet$Id.class
 Servlets\UpdateAmountServlet.class
 PBKDF2\PBKDF2Hasher.class
 Servlets\OnLoginServlet.class
@@ -8,7 +9,9 @@ Servlets\ShowOrderServlet.class
 Servlets\OnShowArticles.class
 BL\Article.class
 Servlets\UpdateAmountServlet$AmountUpdate.class
+Servlets\ShowDetailServlet.class
 DB\Database.class
 BL\Customer.class
 Servlets\OnOrderServlet.class
+BL\OrderDetail.class
 BL\Position.class

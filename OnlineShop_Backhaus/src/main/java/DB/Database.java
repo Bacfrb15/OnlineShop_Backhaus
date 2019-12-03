@@ -3,6 +3,7 @@ package DB;
 import BL.Article;
 import BL.Cart;
 import BL.Order;
+import BL.OrderDetail;
 import BL.Position;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -145,6 +146,24 @@ public class Database {
             return amount;
         }
     }
+    public ArrayList<OrderDetail> showDetails(int orderid) throws SQLException
+    {
+        ArrayList<OrderDetail> details = new ArrayList<>();
+        
+        PreparedStatement ps = conn.prepareStatement("SELECT art.artname, pos.amount, art.price "
+                                                   + "FROM public.position pos INNER JOIN article art ON art.articleid = pos.articleid "
+                                                   + "WHERE pos.orderid = ?");
+        ps.setInt(1, orderid);
+        ResultSet rs = ps.executeQuery();
+        
+        while(rs.next())
+        {
+            details.add(new OrderDetail(rs.getString("artname"), rs.getInt("amount"), rs.getDouble("price")));
+        }
+        
+        return details;
+    }
+    
     public ArrayList<Order> showOrders(int customerid) throws SQLException
     {
         ArrayList<Order> orders = new ArrayList<>();

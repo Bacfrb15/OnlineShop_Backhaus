@@ -87,8 +87,7 @@ public class OnLoginServlet extends HttpServlet {
             }
         } catch (SQLException ex) {
             Logger.getLogger(OnLoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Fehler");
-            redirect = "/login.jsp";
+            redirect = "/error.jsp";
         } catch (ClassNotFoundException | NoSuchAlgorithmException | InvalidKeySpecException ex) {
             Logger.getLogger(OnLoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
