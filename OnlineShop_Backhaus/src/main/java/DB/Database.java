@@ -33,6 +33,13 @@ public class Database {
         conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/onlineshopdb", "postgres", "postgres");
         theInstance = this;
     }
+    
+    /**
+     * Singleton implementation of the database (private constructor)
+     * @return Database instance
+     * @throws SQLException 
+     */
+    
     public synchronized static Database getInstance() throws SQLException
     {
         if(theInstance == null)
@@ -41,16 +48,32 @@ public class Database {
         }
         return theInstance;
     }
+    
+    /**
+     * Returns the customerid that matches the current user
+     * @param username username of the current user
+     * @return customerid of the current user
+     * @throws SQLException 
+     */
+    
     public int getCustomerID(String username) throws SQLException
     {
         PreparedStatement ps = conn.prepareStatement("SELECT customerid "
-                + "FROM customer "
-                + "WHERE username = ? ");
+                                                   + "FROM customer "
+                                                   + "WHERE username = ? ");
         ps.setString(1, username);
         ResultSet rs = ps.executeQuery();
         rs.next();
         return rs.getInt("customerid");
     }
+    
+    /**
+     * Returns the password of the current user
+     * @param username username of the current user
+     * @return password of the current user
+     * @throws SQLException
+     * @throws ClassNotFoundException 
+     */
     
     public String getPassword(String username) throws SQLException, ClassNotFoundException
     {
@@ -63,6 +86,15 @@ public class Database {
         rs.next();
         return rs.getString("password");
     }
+    
+    /**
+     * Counts all the carts from the current customer, 
+     * if the current customer already owns a cart it returns the cartid,
+     * if not a new cartid is created for the current customer
+     * @param customerid of the current user
+     * @return the cartid of the current/new cart
+     * @throws SQLException 
+     */
     
     public int getCartID(int customerid) throws SQLException
     {
@@ -94,13 +126,17 @@ public class Database {
             return getCartID(customerid);
         }
     }
-    
-    public void updateCart(Cart article, int customerid) throws SQLException
-    {
-        int articleid = article.getArticleid();
-        int amount = article.getAmount();
-        updateAmount(customerid, amount, articleid);
-    }
+
+    /**
+     * Counts the amount of cartpositions,
+     * if one already exists in the database, either a article is added or removed
+     * if not a new cartposition gets created 
+     * @param cartid of the current cartposition
+     * @param amount already existing amount of articles in the cart
+     * @param articleid id of the articles in the cart
+     * @return the amount of articles in the cartposition
+     * @throws SQLException 
+     */
     
     public int updateAmount(int cartid, int amount, int articleid) throws SQLException {
         PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) "
@@ -146,6 +182,14 @@ public class Database {
             return amount;
         }
     }
+    
+    /**
+     * Shows the details of the selected order
+     * @param orderid of the selected order
+     * @return an ArrayList of all the order details
+     * @throws SQLException 
+     */
+    
     public ArrayList<OrderDetail> showDetails(int orderid) throws SQLException
     {
         ArrayList<OrderDetail> details = new ArrayList<>();
@@ -164,6 +208,13 @@ public class Database {
         return details;
     }
     
+    /**
+     * Shows all the orders of the current user
+     * @param customerid of the current user
+     * @return an ArrayList of all the Orders of the user
+     * @throws SQLException 
+     */
+    
     public ArrayList<Order> showOrders(int customerid) throws SQLException
     {
         ArrayList<Order> orders = new ArrayList<>();
@@ -180,6 +231,12 @@ public class Database {
         }
         return orders;
     }
+    
+    /**
+     * When buying the selected articles a new order with the order details is created
+     * @param customerid of the current user
+     * @throws SQLException 
+     */
     
     public void newOrder(int customerid) throws SQLException
     {
@@ -216,6 +273,13 @@ public class Database {
         ps.execute();
     }
     
+    /**
+     * Sets the amount of articles in the cart
+     * @param cartid of the cart that is currently used by the user 
+     * @param articles all articles that exist
+     * @return an ArrayList with the correct amount of articles
+     * @throws SQLException 
+     */
     
     public ArrayList<Article> setArticleAmount(int cartid, ArrayList<Article> articles) throws SQLException
     {
@@ -235,6 +299,12 @@ public class Database {
         return articles;
     }
 
+    /**
+     * List of all articles from the database
+     * @return an ArrayList of all articles
+     * @throws SQLException
+     * @throws ClassNotFoundException 
+     */
     
     public ArrayList<Article> getArticles() throws SQLException, ClassNotFoundException
     {

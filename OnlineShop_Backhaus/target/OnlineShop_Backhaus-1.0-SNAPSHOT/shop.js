@@ -23,11 +23,3 @@ function updateAmount(articleid, amount) {
                 });
             });
 }
-function addArticle(articleid)
-{
-    updateAmount(articleid,1);
-}
-function removeArticle(articleid)
-{
-    updateCart(articleid,-1);
-}
