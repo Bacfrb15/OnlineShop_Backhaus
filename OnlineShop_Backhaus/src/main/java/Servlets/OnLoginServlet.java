@@ -82,7 +82,6 @@ public class OnLoginServlet extends HttpServlet {
             }
             else
             {
-                System.out.println("Fehler");
                 redirect = "/login.jsp";
             }
         } catch (SQLException ex) {

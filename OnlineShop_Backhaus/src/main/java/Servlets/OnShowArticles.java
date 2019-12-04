@@ -57,9 +57,7 @@ public class OnShowArticles extends HttpServlet {
             
             int customerid = (int) request.getSession().getAttribute("customerid");
             int cartid = Database.getInstance().getCartID(customerid);
-            
-            
-            
+
             ArrayList<Article> articles = Database.getInstance().setArticleAmount(cartid, Database.getInstance().getArticles());
             
             Gson gson = new Gson();
