@@ -13,6 +13,5 @@
     </head>
     <body>
         <h1>An error has ocured! Please try again later!</h1>
-        <h2>ALARRRM!</h2>
     </body>
 </html>
