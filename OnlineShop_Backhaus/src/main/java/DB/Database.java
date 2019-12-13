@@ -1,10 +1,8 @@
 package DB;
 
 import BL.Article;
-import BL.Cart;
 import BL.Order;
 import BL.OrderDetail;
-import BL.Position;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -129,7 +127,7 @@ public class Database {
 
     /**
      * Counts the amount of cartpositions,
-     * if one already exists in the database, either a article is added or removed
+     * if one already exists in the database, either an article is added or removed
      * if not a new cartposition gets created 
      * @param cartid of the current cartposition
      * @param amount already existing amount of articles in the cart
